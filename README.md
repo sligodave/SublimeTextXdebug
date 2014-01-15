@@ -1,6 +1,8 @@
 # SublimeTextXdebug
 Xdebug debugger client integration for Sublime Text.
 
+__THE ONLY DIFFERENCE BETWEEN THIS AND THE ORIGINAL REPOSITORY IT'S FORKED FROM IS THAT THIS HAS A CONTROL PANEL ADDED SO YOU CAN USE YOUR CURSOR TO ACTION THROUGH A BREAK__
+
 ![SublimeTextXdebug](http://i.imgur.com/2FGYW3P.png)
 
 Based on the Xdebug protocol functionality in [SublimeXdebug](https://github.com/Kindari/SublimeXdebug) package by [Kindari](https://github.com/Kindari).
