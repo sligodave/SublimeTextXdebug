@@ -38,6 +38,8 @@ KEY_STACK_GROUP = "stack_group"
 KEY_STACK_INDEX = "stack_index"
 KEY_WATCH_GROUP = "watch_group"
 KEY_WATCH_INDEX = "watch_index"
+KEY_CONTROLS_GROUP = "controls_group"
+KEY_CONTROLS_INDEX = "controls_index"
 
 KEY_BREAKPOINT_CURRENT = 'breakpoint_current'
 KEY_BREAKPOINT_DISABLED = 'breakpoint_disabled'
@@ -56,16 +58,16 @@ REGION_SCOPE_CURRENT = 'string.quoted.settings'
 
 # Window layout for debugging output
 LAYOUT_DEBUG = {
-                "cols": [0.0, 0.5, 1.0],
-                "rows": [0.0, 0.7, 1.0],
-                "cells": [[0, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]]
-                }
+				"cols": [0.0, 0.1, 0.5, 1.0],
+				"rows": [0.0, 0.7, 1.0],
+				"cells": [[0, 0, 3, 1], [0, 1, 1, 2], [1, 1, 2, 2], [2, 1, 3, 2]]
+				}
 # Default single layout (similar to Alt+Shift+1)
 LAYOUT_NORMAL = {
-                "cols": [0.0, 1.0],
-                "rows": [0.0, 1.0],
-                "cells": [[0, 0, 1, 1]]
-                }
+				"cols": [0.0, 1.0],
+				"rows": [0.0, 1.0],
+				"cells": [[0, 0, 1, 1]]
+				}
 
 RESTORE_LAYOUT = None
 RESTORE_INDEX = None
@@ -113,6 +115,8 @@ CONFIG_KEYS = [
 	KEY_STACK_INDEX,
 	KEY_WATCH_GROUP,
 	KEY_WATCH_INDEX,
+	KEY_CONTROLS_GROUP,
+	KEY_CONTROLS_INDEX,
 	KEY_BREAKPOINT_CURRENT,
 	KEY_BREAKPOINT_DISABLED,
 	KEY_BREAKPOINT_ENABLED,

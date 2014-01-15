@@ -33,11 +33,13 @@ DATA_BREAKPOINT = 'breakpoint'
 DATA_CONTEXT = 'context'
 DATA_STACK = 'stack'
 DATA_WATCH = 'watch'
+DATA_CONTROLS = 'controls'
 
 TITLE_WINDOW_BREAKPOINT = "Xdebug Breakpoint"
 TITLE_WINDOW_CONTEXT = "Xdebug Context"
 TITLE_WINDOW_STACK = "Xdebug Stack"
 TITLE_WINDOW_WATCH = "Xdebug Watch"
+TITLE_WINDOW_CONTROLS = "Xdebug Controls"
 
 
 def close_debug_windows():
@@ -179,6 +181,10 @@ def generate_stack_output(response):
     return values
 
 
+def generate_controls_output():
+    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out')
+
+
 def generate_watch_output():
     """
     Generate output with all watch expressions.
@@ -244,6 +250,8 @@ def get_debug_index(name=None):
     stack_index = get_value(S.KEY_STACK_INDEX, 0)
     watch_group = get_value(S.KEY_WATCH_GROUP, -1)
     watch_index = get_value(S.KEY_WATCH_INDEX, 0)
+    controls_group = get_value(S.KEY_CONTROLS_GROUP, -1)
+    controls_index = get_value(S.KEY_CONTROLS_INDEX, 0)
 
     # Create list with all debug views and sort by group/index
     debug_list = []
@@ -251,6 +259,7 @@ def get_debug_index(name=None):
     debug_list.append((context_group, context_index, TITLE_WINDOW_CONTEXT))
     debug_list.append((stack_group, stack_index, TITLE_WINDOW_STACK))
     debug_list.append((watch_group, watch_index, TITLE_WINDOW_WATCH))
+    debug_list.append((controls_group, controls_index, TITLE_WINDOW_CONTROLS))
     debug_list.sort(key=operator.itemgetter(0,1))
 
     # Recalculate group/index position within boundaries of active window
@@ -385,7 +394,7 @@ def is_debug_view(view):
     Keyword arguments:
     view -- View reference which to check if name matches debug name/title.
     """
-    return view.name() == TITLE_WINDOW_BREAKPOINT or view.name() == TITLE_WINDOW_CONTEXT or view.name() == TITLE_WINDOW_STACK or view.name() == TITLE_WINDOW_WATCH
+    return view.name() == TITLE_WINDOW_BREAKPOINT or view.name() == TITLE_WINDOW_CONTEXT or view.name() == TITLE_WINDOW_STACK or view.name() == TITLE_WINDOW_WATCH or view.name() == TITLE_WINDOW_CONTROLS
 
 
 def set_layout(layout):
@@ -460,6 +469,9 @@ def show_content(data, content=None):
     elif data == DATA_WATCH:
         title = TITLE_WINDOW_WATCH
         content = generate_watch_output()
+    elif data == DATA_CONTROLS:
+        title = TITLE_WINDOW_CONTROLS
+        content = generate_controls_output()
     else:
         return
 
@@ -910,5 +922,16 @@ def toggle_watch(view):
                     S.WATCH[watch_index]['enabled'] = True
                 # Update watch view and save watch data to file
                 sublime.active_window().run_command('xdebug_watch', {"update": True})
+    except:
+        pass
+
+
+def toggle_controls(view):
+    try:
+        point = view.sel()[0]
+        if point.size() > 2 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
+            line = view.substr(view.line(point))
+            # Run, Step Over, Step Into, Step Out
+            view.window().run_command('xdebug_continue', {"command": line.lower().replace(' ', '_')})
     except:
         pass

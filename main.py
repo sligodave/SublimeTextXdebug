@@ -66,6 +66,8 @@ class EventListener(sublime_plugin.EventListener):
             V.toggle_stack(view)
         elif view.name() == V.TITLE_WINDOW_WATCH:
             V.toggle_watch(view)
+        elif view.name() == V.TITLE_WINDOW_CONTROLS:
+            V.toggle_controls(view)
         else:
             pass
 
@@ -613,6 +615,7 @@ class XdebugLayoutCommand(sublime_plugin.WindowCommand):
             V.close_debug_windows()
             return
         # Reset data in debugging related windows
+        V.show_content(V.DATA_CONTROLS)
         V.show_content(V.DATA_BREAKPOINT)
         V.show_content(V.DATA_CONTEXT)
         V.show_content(V.DATA_STACK)
