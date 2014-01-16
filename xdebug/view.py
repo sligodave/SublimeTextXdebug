@@ -182,7 +182,7 @@ def generate_stack_output(response):
 
 
 def generate_controls_output():
-    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out')
+    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out\nEvaluate')
 
 
 def generate_watch_output():
@@ -930,8 +930,11 @@ def toggle_controls(view):
     try:
         point = view.sel()[0]
         if point.size() > 2 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
-            line = view.substr(view.line(point))
+            action = view.substr(view.line(point)).strip().lower().replace(' ', '_')
             # Run, Step Over, Step Into, Step Out
-            view.window().run_command('xdebug_continue', {"command": line.lower().replace(' ', '_')})
+            if action == 'evaluate':
+                view.window().run_command('xdebug_evaluate')
+            else:
+                view.window().run_command('xdebug_continue', {"command": action})
     except:
         pass
