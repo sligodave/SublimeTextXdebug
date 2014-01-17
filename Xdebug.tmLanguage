@@ -302,7 +302,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^(Run|Step Over|Step Into|Step Out|Evaluate)</string>
+			<string>^(Run|Step Over|Step Into|Step Out|Evaluate|Execute)</string>
 			<key>name</key>
 			<string>xdebug.output.controls.entry</string>
 		</dict>
