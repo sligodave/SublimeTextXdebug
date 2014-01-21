@@ -182,7 +182,7 @@ def generate_stack_output(response):
 
 
 def generate_controls_output():
-    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out\nEvaluate\nExecute')
+    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out\nEvaluate')
 
 
 def generate_watch_output():
@@ -934,8 +934,6 @@ def toggle_controls(view):
             # Run, Step Over, Step Into, Step Out
             if action == 'evaluate':
                 view.window().run_command('xdebug_evaluate')
-            elif action == 'execute':
-                view.window().run_command('xdebug_user_execute')
             else:
                 view.window().run_command('xdebug_continue', {"command": action})
     except:
