@@ -24,7 +24,7 @@ except:
 
 # Config module
 from .config import get_value, get_window_value, set_window_value
-
+184
 # Util module
 from .util import get_real_path, get_region_icon, save_watch_data
 
@@ -182,7 +182,7 @@ def generate_stack_output(response):
 
 
 def generate_controls_output():
-    return H.unicode_string('Run\nStep Over\nStep Into\nStep Out\nEvaluate')
+    return H.unicode_string('<Run> <Step Over> <Step Into> <Step Out> <Evaluate>')
 
 
 def generate_watch_output():
@@ -934,7 +934,23 @@ def toggle_controls(view):
     try:
         point = view.sel()[0]
         if point.size() > 2 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
-            action = view.substr(view.line(point)).strip().lower().replace(' ', '_')
+            a = point.begin()
+            b = point.end()
+            action = view.substr(point)
+            while a < 0:
+                character = view.substr(sublime.Region(a - 1, a))
+                if character in ['>', '<']:
+                    break
+                a = a - 1
+            while b < view.size():
+                character = view.substr(sublime.Region(b, b + 1))
+                if character in ['>', '<']:
+                    break
+                b = b + 1
+            action = view.substr(sublime.Region(a, b))
+            action = action.strip().lower()
+            view.sel().clear()
+            view.sel().add(sublime.Region(0, 0))
             # Run, Step Over, Step Into, Step Out
             if action == 'evaluate':
                 view.window().run_command('xdebug_evaluate')

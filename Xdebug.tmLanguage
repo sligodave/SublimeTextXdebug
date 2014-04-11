@@ -273,36 +273,13 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator.settings</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>variable.other.settings</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
 					<string>string.quoted.settings</string>
 				</dict>
-				<key>4</key>
-				<dict>
-					<key>name</key>
-					<string>variable.parameter.settings</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
-					<string>comment.line.settings</string>
-				</dict>
-				<key>6</key>
-				<dict>
-					<key>name</key>
-					<string>support.type.settings</string>
-				</dict>
 			</dict>
+		</dict>
+		<dict>
 			<key>match</key>
-			<string>^(Run|Step Over|Step Into|Step Out|Evaluate)</string>
+			<string>(Run|Step Over|Step Into|Step Out|Evaluate)</string>
 			<key>name</key>
 			<string>xdebug.output.controls.entry</string>
 		</dict>

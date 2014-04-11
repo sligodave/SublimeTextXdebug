@@ -58,10 +58,11 @@ REGION_SCOPE_CURRENT = 'string.quoted.settings'
 
 # Window layout for debugging output
 LAYOUT_DEBUG = {
-				"cols": [0.0, 0.1, 0.5, 1.0],
-				"rows": [0.0, 0.7, 1.0],
-				"cells": [[0, 0, 3, 1], [0, 1, 1, 2], [1, 1, 2, 2], [2, 1, 3, 2]]
+        "cols": [0.0, 0.7, 1.0],
+        "rows": [0.0, 0.9, 1.0],
+        "cells": [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 2, 2]]
 				}
+
 # Default single layout (similar to Alt+Shift+1)
 LAYOUT_NORMAL = {
 				"cols": [0.0, 1.0],

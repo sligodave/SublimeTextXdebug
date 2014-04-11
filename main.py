@@ -6,10 +6,7 @@ import sys
 import threading
 
 # Load modules
-try:
-    from .xdebug import *
-except:
-    from xdebug import *
+from .xdebug import *
 
 # Set Python libraries from system installation
 python_path = config.get_value(S.KEY_PYTHON_PATH)
