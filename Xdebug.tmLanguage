@@ -137,7 +137,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^(\[\d+\])\s*(.*)(\..*)(\s*:.*?\d+)\s*(\((.*?):.*\)|$)</string>
+			<string>^(\[\d+\])[ ]+(\d+)[ ]+(.*?)[ ]+(.*?)[ ]+(.*)</string>
 			<key>name</key>
 			<string>xdebug.output.stack.entry</string>
 		</dict>
@@ -276,10 +276,8 @@
 					<string>string.quoted.settings</string>
 				</dict>
 			</dict>
-		</dict>
-		<dict>
 			<key>match</key>
-			<string>(Run|Step Over|Step Into|Step Out|Evaluate)</string>
+			<string>(Run|Step Over|Step Into|Step Out|Evaluate|Stop|Detach)</string>
 			<key>name</key>
 			<string>xdebug.output.controls.entry</string>
 		</dict>

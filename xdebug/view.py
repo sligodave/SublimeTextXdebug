@@ -167,22 +167,43 @@ def generate_stack_output(response):
                 stack_line = child.get(dbgp.STACK_LINENO, 0)
                 stack_where = child.get(dbgp.STACK_WHERE, '{unknown}')
                 # Append values
-                values += H.unicode_string('[{level}] {filename}.{where}:{lineno}\n' \
-                                          .format(level=stack_level, type=stack_type, where=stack_where, lineno=stack_line, filename=stack_file))
+                filename = os.path.basename(stack_file)
+                values += H.unicode_string('[{level}] {lineno} {filename} {where} {filepath}\n' \
+                                          .format(level=stack_level, type=stack_type, where=stack_where, lineno=stack_line, filepath=stack_file, filename=filename))
                 has_output = True
     except:
         pass
 
     # When no stack use values from exception
     if not has_output and S.BREAKPOINT_EXCEPTION:
-        values += H.unicode_string('[{level}] {filename}.{where}:{lineno}\n' \
-                                  .format(level=0, where='{unknown}', lineno=S.BREAKPOINT_EXCEPTION['lineno'], filename=S.BREAKPOINT_EXCEPTION['filename']))
+        filename = os.path.basename(stack_file)
+        values += H.unicode_string('[{level}] {lineno} {filename} {where} {filepath}\n' \
+                                  .format(level=0, where='{unknown}', lineno=S.BREAKPOINT_EXCEPTION['lineno'], filepath=S.BREAKPOINT_EXCEPTION['filename'], filename=filename))
 
+    # Space all out equally
+    lines = values.split('\n')
+    lines_bits = [x.strip().split(' ') for x in lines]
+    bit_widths = []
+    for line_bits in lines_bits:
+        for i, line_bit in enumerate(line_bits):
+            line_bits[i] = line_bit.strip()
+            if len(bit_widths) <= i:
+                bit_widths.append(0)
+            bit_widths[i] = max(bit_widths[i], len(line_bit.strip()))
+    new_lines = []
+    for i, line_bits in enumerate(lines_bits):
+        print('== ' + str(len(line_bits)))
+        if(len(line_bits) > 1):
+            print(line_bits)
+            print('-- ' + str(bit_widths[1]))
+            line_bits[1] = line_bits[1].rjust(bit_widths[1])
+        new_lines.append(' '.join([b.ljust(bit_widths[j]) for j, b in enumerate(line_bits)]))
+    values = '\n'.join(new_lines)
     return values
 
 
 def generate_controls_output():
-    return H.unicode_string('<Run> <Step Over> <Step Into> <Step Out> <Evaluate>')
+    return H.unicode_string('<Run>\n<Step Over> <Step Into> <Step Out>\n<Evaluate>  <Stop>      <Detach>')
 
 
 def generate_watch_output():
@@ -654,6 +675,8 @@ def show_at_row(view, row=None):
             row_region = rows_to_region(row)[0].a
             # Scroll the view to row
             view.show_at_center(row_region)
+            view.sel().clear()
+            view.sel().add(sublime.Region(view.text_point(int(row) - 1, 0)))
         except:
             # When defining row_region index could be out of bounds
             pass
@@ -879,14 +902,15 @@ def toggle_stack(view):
         if point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.stack.entry'):
             # Get fileuri and line number from selected line in view
             line = view.substr(view.line(point))
-            pattern = re.compile('^(\[\d+\])\s*(?P<fileuri>.*)(\..*)(\s*:.*?(?P<lineno>\d+))\s*(\((.*?):.*\)|$)')
+            pattern = re.compile('^(\[\d+\])[ ]+(?P<lineno>\d+)[ ]+([^ ]+)[ ]+([^ ]+)[ ]+(?P<fileuri>.*?)[ ]*$')
+            # pattern = re.compile('^(\[\d+\])\s*(?P<fileuri>.*)(\..*)(\s*:.*?(?P<lineno>\d+))\s*(\((.*?):.*\)|$)')
             match = pattern.match(line)
             # Show file when it's a valid fileuri
             if match and match.group('fileuri'):
                 filename = get_real_path(match.group('fileuri'))
                 lineno = 0
                 if match.group('lineno'):
-                    lineno = match.group('lineno')
+                    lineno = int(match.group('lineno'))
                 show_file(filename, lineno)
     except:
         pass
@@ -937,7 +961,7 @@ def toggle_controls(view):
             a = point.begin()
             b = point.end()
             action = view.substr(point)
-            while a < 0:
+            while a > 0:
                 character = view.substr(sublime.Region(a - 1, a))
                 if character in ['>', '<']:
                     break
@@ -948,7 +972,7 @@ def toggle_controls(view):
                     break
                 b = b + 1
             action = view.substr(sublime.Region(a, b))
-            action = action.strip().lower()
+            action = action.strip().lower().replace(' ', '_')
             view.sel().clear()
             view.sel().add(sublime.Region(0, 0))
             # Run, Step Over, Step Into, Step Out
