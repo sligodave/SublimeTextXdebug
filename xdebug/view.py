@@ -192,10 +192,7 @@ def generate_stack_output(response):
             bit_widths[i] = max(bit_widths[i], len(line_bit.strip()))
     new_lines = []
     for i, line_bits in enumerate(lines_bits):
-        print('== ' + str(len(line_bits)))
         if(len(line_bits) > 1):
-            print(line_bits)
-            print('-- ' + str(bit_widths[1]))
             line_bits[1] = line_bits[1].rjust(bit_widths[1])
         new_lines.append(' '.join([b.ljust(bit_widths[j]) for j, b in enumerate(line_bits)]))
     values = '\n'.join(new_lines)
@@ -843,10 +840,10 @@ def toggle_breakpoint(view):
         # Get selected point in view
         point = view.sel()[0]
         # Check if selected point uses breakpoint line scope
-        if point.size() == 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.line'):
+        if sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.line'):
             # Find line number of breakpoint
             line = view.substr(view.line(point))
-            pattern = re.compile('^\\s*(?:(\\|\\+\\|)|(\\|-\\|))\\s*(?P<line_number>\\d+)\\s*(?:(--)(.*)|.*)')
+            pattern = re.compile('^\s*(?:(\|\+\|)|(\|-\|))\s*(?P<line_number>\d+)\s*(?:(--)(.*)|.*)')
             match = pattern.match(line)
             # Check if it has found line number
             if match and match.group('line_number'):
@@ -863,7 +860,7 @@ def toggle_breakpoint(view):
                 if file_line is None:
                     return
                 # Remove unnecessary text from line to get filename
-                file_pattern = re.compile('^\\s*(=>)\\s*(?P<filename>.*)')
+                file_pattern = re.compile('^\s*(=>)\s*(?P<filename>.*)')
                 file_match = file_pattern.match(file_line)
                 # Check if it is a valid filename
                 if file_match and file_match.group('filename'):
@@ -877,9 +874,9 @@ def toggle_breakpoint(view):
                     if sublime.score_selector(view.scope_name(point.a), 'keyword') and not S.BREAKPOINT[filename][line_number]['enabled']:
                         enabled = True
                     # Toggle breakpoint only if it has valid value
-                    if enabled is None:
-                        return
-                    sublime.active_window().run_command('xdebug_breakpoint', {"enabled": enabled, "rows": [line_number], "filename": filename})
+                    if enabled is not None:
+                        sublime.active_window().run_command('xdebug_breakpoint', {"enabled": enabled, "rows": [line_number], "filename": filename})
+                    show_file(filename, int(line_number))
         # Check if selected point uses breakpoint file scope
         elif point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.file'):
             # Get filename from selected line in view
