@@ -876,9 +876,12 @@ def toggle_breakpoint(view):
                     # Toggle breakpoint only if it has valid value
                     if enabled is not None:
                         sublime.active_window().run_command('xdebug_breakpoint', {"enabled": enabled, "rows": [line_number], "filename": filename})
-                    show_file(filename, int(line_number))
+                    # Goto the page/line if number is clicked.
+                    if sublime.score_selector(view.scope_name(point.a), 'variable.other.settings'):
+                        show_file(filename, int(line_number))
         # Check if selected point uses breakpoint file scope
-        elif point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.file'):
+        # elif point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.file'):
+        elif sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.file'):
             # Get filename from selected line in view
             file_line = view.substr(view.line(point))
             file_pattern = re.compile('^\\s*(=>)\\s*(?P<filename>.*)')
@@ -896,7 +899,8 @@ def toggle_stack(view):
         # Get selected point in view
         point = view.sel()[0]
         # Check if selected point uses stack entry scope
-        if point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.stack.entry'):
+        # if point.size() > 3 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.stack.entry'):
+        if sublime.score_selector(view.scope_name(point.a), 'xdebug.output.stack.entry'):
             # Get fileuri and line number from selected line in view
             line = view.substr(view.line(point))
             pattern = re.compile('^(\[\d+\])[ ]+(?P<lineno>\d+)[ ]+([^ ]+)[ ]+([^ ]+)[ ]+(?P<fileuri>.*?)[ ]*$')
@@ -954,7 +958,8 @@ def toggle_watch(view):
 def toggle_controls(view):
     try:
         point = view.sel()[0]
-        if point.size() > 2 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
+        # if point.size() > 2 and sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
+        if sublime.score_selector(view.scope_name(point.a), 'xdebug.output.controls.entry'):
             a = point.begin()
             b = point.end()
             action = view.substr(point)
