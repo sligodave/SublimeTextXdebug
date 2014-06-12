@@ -435,6 +435,12 @@ class XdebugStatusCommand(sublime_plugin.WindowCommand):
 
 class XdebugEvaluateCommand(sublime_plugin.WindowCommand):
     def run(self):
+        view = self.window.active_view_in_group(0)
+        if view:
+            sel = view.sel()
+            if len(sel) and sel[0].a != sel[0].b:
+                self.on_done(view.substr(sel[0]))
+                return
         self.window.show_input_panel('Evaluate', '', self.on_done, self.on_change, self.on_cancel)
 
     def on_done(self, expression):
