@@ -171,6 +171,9 @@ class SocketHandler(threading.Thread):
         finally:
             S.SESSION_BUSY = False
 
+        if self.action in [ACTION_EXECUTE, ACTION_USER_EXECUTE] and S.AUTO_EVALUATE is not None:
+            self.run_command('xdebug_evaluate', {'auto': True})
+
 
     def evaluate(self, expression):
         if not expression or not is_connected():

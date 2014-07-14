@@ -79,6 +79,7 @@ SESSION = None
 BREAKPOINT = {}
 CONTEXT_DATA = {}
 WATCH = []
+AUTO_EVALUATE = None
 
 BREAKPOINT_EXCEPTION = None
 # Breakpoint line number in script being debugged

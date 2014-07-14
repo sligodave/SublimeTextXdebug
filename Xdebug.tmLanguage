@@ -277,7 +277,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>(Run|Step Over|Step Into|Step Out|Evaluate|Stop|Detach)</string>
+			<string>(Run|Step Over|Step Into|Step Out|Evaluate|Stop|Detach|Auto Evaluate)</string>
 			<key>name</key>
 			<string>xdebug.output.controls.entry</string>
 		</dict>

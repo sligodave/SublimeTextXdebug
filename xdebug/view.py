@@ -200,7 +200,10 @@ def generate_stack_output(response):
 
 
 def generate_controls_output():
-    return H.unicode_string('<Run>\n<Step Over> <Step Into> <Step Out>\n<Evaluate>  <Stop>      <Detach>')
+    content = '<Run>\n<Step Over> <Step Into> <Step Out>\n<Evaluate>  <Stop>      <Detach>\n<Auto Evaluate>'
+    if S.AUTO_EVALUATE is not None:
+        content += '\n' + S.AUTO_EVALUATE
+    return H.unicode_string(content)
 
 
 def generate_watch_output():
@@ -980,6 +983,22 @@ def toggle_controls(view):
             # Run, Step Over, Step Into, Step Out
             if action == 'evaluate':
                 view.window().run_command('xdebug_evaluate')
+            elif action == 'auto_evaluate':
+                S.AUTO_EVALUATE = None
+                window = view.window()
+                for g in range(2):
+                    v = window.active_view_in_group(g)
+                    if v:
+                        sel = v.sel()
+                        if len(sel) and sel[0].a != sel[0].b:
+                            S.AUTO_EVALUATE = v.substr(sel[0])
+                            break
+                org_content = content = view.substr(sublime.Region(0, view.size())).strip()
+                content = content[:content.find('<Auto Evaluate>') + 15]
+                if S.AUTO_EVALUATE is not None:
+                    content += '\n' + S.AUTO_EVALUATE
+                if org_content != content:
+                    view.run_command('xdebug_view_update', {'data': content, 'readonly': True})
             else:
                 view.window().run_command('xdebug_continue', {"command": action})
     except:

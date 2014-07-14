@@ -326,6 +326,7 @@ class XdebugSessionStopCommand(sublime_plugin.WindowCommand):
             S.SESSION_BUSY = False
             S.BREAKPOINT_EXCEPTION = None
             S.BREAKPOINT_ROW = None
+            S.AUTO_EVALUATE = None
             S.CONTEXT_DATA.clear()
             async_session = session.SocketHandler(session.ACTION_WATCH, check_watch_view=True)
             async_session.start()
@@ -434,14 +435,18 @@ class XdebugStatusCommand(sublime_plugin.WindowCommand):
 
 
 class XdebugEvaluateCommand(sublime_plugin.WindowCommand):
-    def run(self):
-        view = self.window.active_view_in_group(0)
-        if view:
-            sel = view.sel()
-            if len(sel) and sel[0].a != sel[0].b:
-                self.on_done(view.substr(sel[0]))
-                return
-        self.window.show_input_panel('Evaluate', '', self.on_done, self.on_change, self.on_cancel)
+    def run(self, auto=False):
+        if auto:
+            if S.AUTO_EVALUATE is not None:
+                self.on_done(S.AUTO_EVALUATE)
+        else:
+            view = self.window.active_view_in_group(0)
+            if view:
+                sel = view.sel()
+                if len(sel) and sel[0].a != sel[0].b:
+                    self.on_done(view.substr(sel[0]))
+                    return
+            self.window.show_input_panel('Evaluate', '', self.on_done, self.on_change, self.on_cancel)
 
     def on_done(self, expression):
         async_session = session.SocketHandler(session.ACTION_EVALUATE, expression=expression)
