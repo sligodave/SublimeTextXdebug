@@ -42,6 +42,9 @@ def base64_decode(data):
 def base64_encode(data):
 	return base64.b64encode(data)
 
+def unicode_chr(code):
+	return unichr(code)
+
 def unicode_string(string):
 	if isinstance(string, unicode):
 		return string
@@ -50,3 +53,6 @@ def unicode_string(string):
 def is_digit(string):
 	# Check if basestring (str, unicode) is digit
 	return isinstance(string, basestring) and string.isdigit()
+
+def is_number(value):
+	return isinstance(value, (int, long))
