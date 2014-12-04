@@ -78,7 +78,7 @@ def generate_breakpoint_output():
                 else:
                     breakpoint_entry += '|-|'
                 # Line number
-                breakpoint_entry += ' %s' % lineno
+                breakpoint_entry += '  |x| %s' % lineno
                 # Conditional expression
                 if bp['expression'] is not None:
                     breakpoint_entry += ' -- "%s"' % bp['expression']
@@ -839,14 +839,14 @@ def render_regions(view=None):
 
 
 def toggle_breakpoint(view):
-    try:
+    # try:
         # Get selected point in view
         point = view.sel()[0]
         # Check if selected point uses breakpoint line scope
         if sublime.score_selector(view.scope_name(point.a), 'xdebug.output.breakpoint.line'):
             # Find line number of breakpoint
             line = view.substr(view.line(point))
-            pattern = re.compile('^\s*(?:(\|\+\|)|(\|-\|))\s*(?P<line_number>\d+)\s*(?:(--)(.*)|.*)')
+            pattern = re.compile('^\s*(?:(\|\+\|)|(\|-\|))  \|x\|\s*(?P<line_number>\d+)\s*(?:(--)(.*)|.*)')
             match = pattern.match(line)
             # Check if it has found line number
             if match and match.group('line_number'):
@@ -869,15 +869,19 @@ def toggle_breakpoint(view):
                 if file_match and file_match.group('filename'):
                     filename = file_match.group('filename')
                     line_number = match.group('line_number')
-                    enabled = None
+                    enabled = -1
+                    print(view.scope_name(point.a))
                     # Disable breakpoint
-                    if sublime.score_selector(view.scope_name(point.a), 'entity') and S.BREAKPOINT[filename][line_number]['enabled']:
+                    if sublime.score_selector(view.scope_name(point.a), 'enable') and S.BREAKPOINT[filename][line_number]['enabled']:
                         enabled = False
                     # Enable breakpoint
-                    if sublime.score_selector(view.scope_name(point.a), 'keyword') and not S.BREAKPOINT[filename][line_number]['enabled']:
+                    if sublime.score_selector(view.scope_name(point.a), 'disable') and not S.BREAKPOINT[filename][line_number]['enabled']:
                         enabled = True
+                    # Delete breakpoint
+                    if sublime.score_selector(view.scope_name(point.a), 'delete'):
+                        enabled = None
                     # Toggle breakpoint only if it has valid value
-                    if enabled is not None:
+                    if enabled is not -1:
                         sublime.active_window().run_command('xdebug_breakpoint', {"enabled": enabled, "rows": [line_number], "filename": filename})
                     # Goto the page/line if number is clicked.
                     if sublime.score_selector(view.scope_name(point.a), 'variable.other.settings'):
@@ -893,8 +897,8 @@ def toggle_breakpoint(view):
             if file_match and file_match.group('filename'):
                 filename = file_match.group('filename')
                 show_file(filename)
-    except:
-        pass
+    # except:
+    #     pass
 
 
 def toggle_stack(view):

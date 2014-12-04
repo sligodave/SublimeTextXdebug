@@ -185,31 +185,36 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>entity.other.attribute-name.anchor.settings</string>
+					<string>enable</string>
 				</dict>
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator.settings</string>
+					<string>disable</string>
 				</dict>
 				<key>3</key>
 				<dict>
 					<key>name</key>
-					<string>variable.other.settings</string>
+					<string>delete</string>
 				</dict>
 				<key>4</key>
 				<dict>
 					<key>name</key>
-					<string>variable.parameter.settings</string>
+					<string>variable.other.settings</string>
 				</dict>
 				<key>5</key>
+				<dict>
+					<key>name</key>
+					<string>variable.parameter.settings</string>
+				</dict>
+				<key>6</key>
 				<dict>
 					<key>name</key>
 					<string>string.quoted.settings</string>
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^\s*(?:(\|\+\|)|(\|-\|))\s*(\d+)\s*(?:(--)(.*)|.*)</string>
+			<string>^\s*(?:(\|\+\|)|(\|-\|))  (\|x\|)\s*(\d+)\s*(?:(--)(.*)|.*)</string>
 			<key>name</key>
 			<string>xdebug.output.breakpoint.line</string>
 		</dict>
