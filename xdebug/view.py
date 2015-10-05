@@ -3,6 +3,8 @@ import sublime
 import operator
 import os
 import re
+import sys
+import subprocess
 
 # Helper module
 try:
@@ -24,7 +26,7 @@ except:
 
 # Config module
 from .config import get_value, get_window_value, set_window_value
-184
+
 # Util module
 from .util import get_real_path, get_region_icon, save_watch_data
 
@@ -636,7 +638,7 @@ def show_file(filename, row=None):
         # Check if file is already open
         found = False
         view = window.find_open_file(filename)
-        if not view is None:
+        if view is not None:
             found = True
             window.focus_view(view)
             # Set focus to row (line number)
@@ -647,6 +649,16 @@ def show_file(filename, row=None):
             window.focus_view(view)
             # Set focus to row (line number) when file is loaded
             S.SHOW_ROW_ONLOAD[filename] = row
+        if sublime.platform() == 'osx':
+            # Concept from rsub, check it out! https://github.com/henrikpersson/rsub/
+            # Calls out to system python2 as ScriptBridge isn't installed in sublimes python3
+            # Conveniently the python major python version matches the ST version
+            version = sys.version_info[0]
+            command = "python -c "
+            command += "\"from ScriptingBridge import SBApplication;"
+            command += "SBApplication.applicationWithBundleIdentifier_"
+            command += "('com.sublimetext.%d').activate()\"" % version
+            subprocess.call(command, shell=True)
 
 
 def show_panel_content(content):
@@ -870,7 +882,6 @@ def toggle_breakpoint(view):
                     filename = file_match.group('filename')
                     line_number = match.group('line_number')
                     enabled = -1
-                    print(view.scope_name(point.a))
                     # Disable breakpoint
                     if sublime.score_selector(view.scope_name(point.a), 'enable') and S.BREAKPOINT[filename][line_number]['enabled']:
                         enabled = False
